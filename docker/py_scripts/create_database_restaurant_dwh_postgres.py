@@ -1,5 +1,6 @@
 import psycopg2
-from psycopg2 import OperationalError 
+from psycopg2 import Error
+
 
 def drop_database():
     try:
@@ -8,17 +9,21 @@ def drop_database():
             dbname="postgres",
             user="postgres",
             password="Admin!234",
-            host="localhost",
+            host="db",
             port="5432"
         )
-        
+        print("Connection extablished")
+
         # Set autocommit to True to ensure DROP DATABASE is not run inside a transaction block
         conn.autocommit = True
 
         # Create a cursor object
         cur = conn.cursor()
-        
+        print("Cursor created")
+
         # Drop the database if it exists
+
+        print("Trying DROP DATABASE...")
         cur.execute("DROP DATABASE IF EXISTS restaurant_dwh")
 
         # Commit the transaction
@@ -43,7 +48,7 @@ def create_database():
             dbname="postgres",
             user="postgres",
             password="Admin!234",
-            host="localhost",
+            host="db",
             port="5432"
         )
         

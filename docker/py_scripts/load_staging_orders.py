@@ -22,7 +22,7 @@ def load_staging_orders():
             dbname="restaurant_db",
             user="postgres",
             password="Admin!234",
-            host="localhost",
+            host="db",
             port="5432"
         )
         
@@ -31,7 +31,7 @@ def load_staging_orders():
             dbname="restaurant_dwh",
             user="postgres",
             password="Admin!234",
-            host="localhost",
+            host="db",
             port="5432"
         )
 

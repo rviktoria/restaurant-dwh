@@ -22,7 +22,7 @@ def load_dim_menu_items():
             dbname="restaurant_dwh",
             user="postgres",
             password="Admin!234",
-            host="localhost",
+            host="db",
             port="5432"
         )
 

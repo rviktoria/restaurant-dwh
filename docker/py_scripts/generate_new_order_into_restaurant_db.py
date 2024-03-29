@@ -2,6 +2,7 @@ import psycopg2
 import random
 from psycopg2 import Error
 
+
 def add_order(conn):
     try:
         # Open a cursor to perform database operations
@@ -52,7 +53,7 @@ def main():
             dbname="restaurant_db",
             user="postgres",
             password="Admin!234",
-            host="localhost",
+            host="db",
             port="5432"
         )
 

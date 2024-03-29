@@ -2,10 +2,12 @@
 -- CREATE DATABASE restaurant_dwh;
 
 
--- DROP SCHEMA IF EXISTS restaurant;
--- CREATE SCHEMA restaurant;
+DROP SCHEMA IF EXISTS restaurant;
+CREATE SCHEMA restaurant;
 SET SCHEMA 'restaurant';
 
+----------------------------------------------------
+----------- CREATE Staging tables-------------------
 
 DROP TABLE IF EXISTS restaurant.staging_menu_category CASCADE;
 CREATE TABLE restaurant.staging_menu_category (
@@ -47,6 +49,8 @@ CREATE TABLE restaurant.staging_order_details (
 );
 
 
+----------------------------------------------------
+----------- CREATE Dimensional tables---------------
 
 -- v_pre_dim_date
 
@@ -153,6 +157,8 @@ INSERT INTO restaurant.dim_menu_items (menu_item_name_id, item_name_eng, item_pr
 VALUES (0, 'unknown', 0.00, 'unknown', CURRENT_DATE, CURRENT_TIME, '9999-01-01', '00:00:00');
 
 
+----------------------------------------------------
+-------------- CREATE Fact tables-------------------
 
 -- v_pre_fact_orders
 
@@ -208,6 +214,7 @@ CREATE TABLE restaurant.fact_orders (
 	created_date DATE,
 	created_time TIME(0)
 );
+
 
 
 /*

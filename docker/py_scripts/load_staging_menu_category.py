@@ -15,59 +15,56 @@ def insert_log(conn_dest, task_name, status, start_time=None, end_time=None, rec
     except Error as e:
         print("Error inserting log:", e)
 
-def load_fact_orders():
+def load_staging_menu_category():
     try:
+        # Connect to restaurant_db
+        conn_source = psycopg2.connect(
+            dbname="restaurant_db",
+            user="postgres",
+            password="Admin!234",
+            host="db",
+            port="5432"
+        )
+        
         # Connect to restaurant_dwh
         conn_dest = psycopg2.connect(
             dbname="restaurant_dwh",
             user="postgres",
             password="Admin!234",
-            host="localhost",
+            host="db",
             port="5432"
         )
 
         # Log start of the process
         start_time = datetime.now()
-        insert_log(conn_dest, "load_fact_orders", "Running", start_time=start_time)
+        insert_log(conn_dest, "load_staging_menu_category", "Running", start_time=start_time)
 
         # Open cursors
+        cur_source = conn_source.cursor()
         cur_dest = conn_dest.cursor()
 
-        # Delete existing records created on the current date from fact_orders table
-        cur_dest.execute("DELETE FROM restaurant.fact_orders WHERE created_date = CURRENT_DATE")
+        # Truncate staging table in restaurant_dwh
+        cur_dest.execute("TRUNCATE TABLE restaurant.staging_menu_category")
 
-        # Insert new records from pre_fact_view into fact_orders table
-        cur_dest.execute("""
-            INSERT INTO restaurant.fact_orders 
-            (order_id, order_line, menu_category_key, menu_item_key, item_price, order_total_lines, order_total_price, date_key, order_date, created_date, created_time)
-            SELECT 
-                pfo.order_id,
-                pfo.order_line,
-                pfo.menu_category_key,
-                pfo.menu_item_key,
-                pfo.item_price,
-                pfo.order_total_lines,
-                pfo.order_total_price,
-                pfo.order_date_key,
-                pfo.order_date,
-                CURRENT_DATE,
-                CURRENT_TIME
-            FROM 
-                restaurant.v_pre_fact_orders AS pfo
-            WHERE 
-                pfo.order_date = CURRENT_DATE - INTERVAL '1 day';
-        """)
-
-        # Get the number of records processed
-        records_processed = cur_dest.rowcount
+        # Fetch data from restaurant_db and insert into restaurant_dwh
+        cur_source.execute("SELECT menu_category_id, menu_category_name FROM restaurant.menu_category")
+        rows = cur_source.fetchall()
+        for row in rows:
+            menu_category_id, menu_category_name = row
+            cur_dest.execute("INSERT INTO restaurant.staging_menu_category (menu_category_id, menu_category_name, created_date, created_time) VALUES (%s, %s, CURRENT_DATE, CURRENT_TIME)",
+                             (menu_category_id, menu_category_name))
+        
+        
+        # Calculate the number of records processed
+        records_processed = len(rows)  # Assuming rows contains the fetched records
 
         # Log successful completion
         end_time = datetime.now()
-        insert_log(conn_dest, "load_fact_orders", "Success", start_time=start_time, end_time=end_time, records_processed=records_processed)
+        insert_log(conn_dest, "load_staging_menu_category", "Success", start_time=start_time, end_time=end_time, records_processed=records_processed)   
         
         # Commit changes and close connections
         conn_dest.commit()
-        print("Data updated successfully.")
+        print("Data copied successfully.")        
     except Error as e:
         # Log error and failure
         end_time = datetime.now()
@@ -77,8 +74,10 @@ def load_fact_orders():
         raise        
     finally:
         # Close connections
+        if conn_source:
+            conn_source.close()
         if conn_dest:
             conn_dest.close()
 
 # Call the function to copy data
-load_fact_orders()
+load_staging_menu_category()

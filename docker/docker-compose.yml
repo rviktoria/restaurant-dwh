@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h db -U postgres -d postgres"]
+      interval: 10s  # Optional, check every 10 seconds
+      timeout: 5s   # Optional, maximum check time
+      retries: 2    # Optional, retries before unhealthy
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Admin!234
+    ports:
+      - "5432:5432"
+    networks:
+      - my_network
+
+  python-app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./sql_scripts:/app/sql_scripts  # Mount local directory to container path for SQL scripts
+      - ./py_scripts:/app/py_scripts    # Mount local directory to container path for Python scripts
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
+    
