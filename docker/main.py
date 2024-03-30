@@ -45,7 +45,7 @@ def execute_sql_scripts(db_name, script_name):
 if __name__ == "__main__":
     
     # Execute scripts
-    
+
     # Create databases
     execute_python_scripts('create_database_restaurant_db_postgres.py') #Step 1
     execute_python_scripts('create_database_restaurant_dwh_postgres.py') #Step 2

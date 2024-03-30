@@ -1,2 +1,2 @@
-* * * * * python generate_orders.py #runs every 1 minute
-*/5 * * * * python cronjobs.py #runs every 5 minutes
+* * * * * /usr/local/bin/python /app/generate_orders.py >> /var/log/cron/test.log 2>&1  #runs every 1 minute
+*/5 * * * * /usr/local/bin/python /app/cronjobs.py >> /var/log/cron/test.log 2>&1  #runs every 5 minutes

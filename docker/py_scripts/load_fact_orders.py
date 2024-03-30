@@ -34,7 +34,7 @@ def load_fact_orders():
         cur_dest = conn_dest.cursor()
 
         # Delete existing records created on the current date from fact_orders table
-        cur_dest.execute("DELETE FROM restaurant.fact_orders WHERE created_date = CURRENT_DATE OR order_date = CURRENT_DATE - INTERVAL '1 day'")
+        cur_dest.execute("DELETE FROM restaurant.fact_orders WHERE created_date = CURRENT_DATE")
 
         # Insert new records from pre_fact_view into fact_orders table
         cur_dest.execute("""
@@ -53,9 +53,7 @@ def load_fact_orders():
                 CURRENT_DATE,
                 CURRENT_TIME
             FROM 
-                restaurant.v_pre_fact_orders AS pfo
-            WHERE 
-                pfo.order_date = CURRENT_DATE - INTERVAL '1 day';
+                restaurant.v_pre_fact_orders AS pfo;
         """)
 
         # Get the number of records processed
