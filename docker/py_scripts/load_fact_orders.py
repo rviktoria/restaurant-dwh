@@ -34,7 +34,7 @@ def load_fact_orders():
         cur_dest = conn_dest.cursor()
 
         # Delete existing records created on the current date from fact_orders table
-        cur_dest.execute("DELETE FROM restaurant.fact_orders WHERE created_date = CURRENT_DATE")
+        cur_dest.execute("DELETE FROM restaurant.fact_orders WHERE created_date = CURRENT_DATE OR order_date = CURRENT_DATE - INTERVAL '1 day'")
 
         # Insert new records from pre_fact_view into fact_orders table
         cur_dest.execute("""
