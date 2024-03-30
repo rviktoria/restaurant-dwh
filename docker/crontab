@@ -1,0 +1,2 @@
+* * * * * python generate_orders.py #runs every 1 minute
+*/5 * * * * python cronjobs.py #runs every 5 minutes
