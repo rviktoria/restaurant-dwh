@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Run init.py
+# Run main.py
 python main.py || exit 1
 echo "cron time"
 # Start cron service in the background
