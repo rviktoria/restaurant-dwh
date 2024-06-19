@@ -59,5 +59,5 @@ docker-compose down
 ## Dataset Sources
 The "restaurant_orders_dataset_sources" directory contains original sources from external free dataset warehouses.
 
-- Source: https://mavenanalytics.io/data-playground?page=3&pageSize=5 
+- Source: https://mavenanalytics.io/data-playground 
 - Title: Restaurant Orders
